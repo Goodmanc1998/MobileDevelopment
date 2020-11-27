@@ -38,6 +38,6 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         webView = (WebView)findViewById(R.id.mainView);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("file:///android_asset/pongGame.html");
+        webView.loadUrl("file:///android_asset/Main.html");
     }
 }

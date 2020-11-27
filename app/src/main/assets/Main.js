@@ -1,129 +1,99 @@
-var Map = [];
-var cubeSize = 15;
-var mapWidth = 28;
-var mapHeight = 48;
-
-var fillPercent = 60;
-
-var wallsNeeded = 5;
-
 var canvas;
 var canvasContext;
 
+var FPS = 60;
+
+
+let js;
+let m;
+
+let pr;
+
+
 function load(){
+
+    InitCanvas();
+
+    js = new Joystick();
+    m = new Movement(canvas.width / 2, canvas.height / 2, 5);
+
+    pr = new Render(75, 75, 'RTS_Crate_0.png')
+
+
+    setInterval(Update, 1000 / FPS);
+}
+
+
+
+function InitCanvas(){
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    initMap();
-
-    //renderWall(5 * cubeSize, 5 * cubeSize, 35, 35, "Yellow");
-    for(i = 0; i <= 3; i++)
-        SmoothMap();
-
-}
-
-function initMap(){
-    for(x = 0; x < mapWidth; x++)
-    {
-    Map[x] = [];
-        for(y = 0; y < mapHeight; y++)
-        {
-            if(x == 0 || x == (mapWidth - 1) || y == 0 || y == (mapHeight - 1))
-            {
-                Map[x][y] = 'W';
-            }
-            else
-            {
-                var rdmRange = Math.round(Math.random() * 100);
-
-                if(rdmRange < fillPercent)
-                {
-                    Map[x][y] = 'W';
-                }
-                else
-                    Map[x][y] = 'E';
-            }
-        }
+    if(canvas.getContext){
+        canvas.addEventListener("touchstart", touchDown, false);
+        canvas.addEventListener("touchmove", touchXY, true);
+        canvas.addEventListener("touchend", touchUp, false);
     }
 
+    styleText('black', '20px Courier New', 'center', 'middle');
 }
 
-function SmoothMap(){
-    for(x = 0; x < mapWidth; x++)
-    {
-        for(y = 0; y < mapHeight; y++)
-        {
-            var nWalls = getNeighbours(x, y);
+function Update() {
 
-            if(nWalls >= wallsNeeded)
-            {
-                Map[x][y] = 'W';
-            }
-            else
-            {
-                Map[x][y] = 'E';
-            }
-        }
+    RenderMain();
+
+    m.moveDir.x = js.dir.x;
+    m.moveDir.y = js.dir.y;
+
+    m.Move();
+
+}
+
+function touchUp(evt) {
+     evt.preventDefault();
+     // Terminate touch path
+     lastPt=null;
+
+     js.onRelease();
+}
+
+function touchDown(evt) {
+    evt.preventDefault();
+    //touchXY(evt);
+
+    js.OnClick(evt.touches[0].pageX, evt.touches[0].pageY)
+}
+
+function touchXY(evt) {
+    evt.preventDefault();
+
+    if(js.touchActive == true)
+    {
+        js.OnHold(evt.touches[0].pageX, evt.touches[0].pageY);
     }
 
-    renderGameMap();
+
 }
 
-function getNeighbours(posX, posY){
-    var wallCount = 0;
+function RenderMain(){
+    //Clearing Canvas
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
-    for(nPosX = posX - 1; nPosX <= posX + 1; nPosX++)
-    {
-        for(nPosY = posY - 1; nPosY <= posY + 1; nPosY++)
-        {
-            if(nPosX >= 0 && nPosX < mapWidth && nPosY >= 0 && nPosY < mapHeight)
-            {
-                if(nPosX != posX || nPosY != posY)
-                {
-                    if(Map[nPosX][nPosY] == 'W')
-                    {
-                        wallCount++;
-                    }
-                }
-            }
-            else
-                wallCount++;
-        }
-    }
+    js.onRender();
 
-    return wallCount;
-}
+    pr.RenderImage(m.position.x, m.position.y);
 
-function renderGameMap(){
-    for(x = 0; x < mapWidth; x++)
-    {
-        for(y = 0; y < mapHeight; y++)
-        {
-            switch(Map[x][y])
-            {
-                case 'W':
-                {
-                    renderWall(x * cubeSize, y * cubeSize, cubeSize, cubeSize, "black");
-                    break;
-                }
-                case 'E':
-                {
-                    renderWall(x * cubeSize, y * cubeSize, cubeSize, cubeSize, "white");
-                    break;
-                }
-            }
-        }
-    }
-}
-
-function renderWall(leftX, topY, width, height, drawColor) {
-        canvasContext.beginPath();
-        canvasContext.fillStyle = drawColor;
-        canvasContext.fillRect(leftX, topY, width, height);
-        canvasContext.closePath();
 
 
 }
+
+function styleText(txtColour, txtFont, txtAlign, txtBaseline) {
+     canvasContext.fillStyle = txtColour;
+     canvasContext.font = txtFont;
+     canvasContext.textAlign = txtAlign;
+     canvasContext.textBaseline = txtBaseline;
+}
+
