@@ -4,10 +4,22 @@ var canvasContext;
 var FPS = 60;
 
 
+var lastUpdate = Date.now();
+var myInterval;
+var now;
+var deltaTime;
+
 let js;
 let m;
 
 let pr;
+
+let bullet;
+let playerGun;
+
+let bkg;
+
+let player;
 
 
 function load(){
@@ -15,15 +27,21 @@ function load(){
     InitCanvas();
 
     js = new Joystick();
-    m = new Movement(canvas.width / 2, canvas.height / 2, 5);
-
-    pr = new Render(75, 75, 'RTS_Crate_0.png')
 
 
-    setInterval(Update, 1000 / FPS);
+    player = new PlayerShip('ShipSpaceRocket.png', 'BulletF.png');
+
+
+    bkg = new Render(canvas.width, canvas.height, 'backgroundBasic.png');
+
+    myInterval = setInterval(Update, 1000 / FPS);
+
+    StartPlayer();
 }
 
-
+function StartPlayer(){
+    player.Start(canvas.width / 2, canvas.height / 2, 500);
+}
 
 function InitCanvas(){
     canvas = document.getElementById('gameCanvas');
@@ -38,24 +56,24 @@ function InitCanvas(){
         canvas.addEventListener("touchend", touchUp, false);
     }
 
-    styleText('black', '20px Courier New', 'center', 'middle');
+
 }
 
 function Update() {
 
+    CalculateTime();
+
+    player.Update();
+
+    player.m.moveDir.x = js.dir.x;
+    player.m.moveDir.y = js.dir.y;
+
     RenderMain();
-
-    m.moveDir.x = js.dir.x;
-    m.moveDir.y = js.dir.y;
-
-    m.Move();
-
 }
 
 function touchUp(evt) {
      evt.preventDefault();
      // Terminate touch path
-     lastPt=null;
 
      js.onRelease();
 }
@@ -81,13 +99,24 @@ function touchXY(evt) {
 function RenderMain(){
     //Clearing Canvas
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    styleText('white', '20px Courier New', 'center', 'middle');
+
+    bkg.RenderImage(canvas.width/ 2, canvas.height / 2);
 
     js.onRender();
 
-    pr.RenderImage(m.position.x, m.position.y);
+    player.Render()
 
 
 
+    //canvasContext.fillText(playerGun.bullets.length, canvas.width/2, canvas.height/2 + 100);
+
+}
+
+function CalculateTime(){
+        now = Date.now();
+        deltaTime = (now - lastUpdate) / 1000;
+        lastUpdate = now;
 }
 
 function styleText(txtColour, txtFont, txtAlign, txtBaseline) {

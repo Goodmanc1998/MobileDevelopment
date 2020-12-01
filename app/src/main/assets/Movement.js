@@ -1,13 +1,11 @@
 class Movement{
 
-    constructor(posX, posY, acc){
+    constructor(){
 
         this.position = {
-            x : posX,
-            y : posY
+            x : 0,
+            y : 0
         };
-
-        this.acceleration = acc;
 
         this.moveDir = {
             x : 0,
@@ -16,9 +14,15 @@ class Movement{
 
     }
 
+    Start(posX, posY, acc){
+        this.position.x = posX;
+        this.position.y = posY;
+        this.acceleration = acc;
+    }
+
     Move(){
-        this.position.x += this.moveDir.x * this.acceleration;
-        this.position.y += this.moveDir.y * this.acceleration;
+        this.position.x += this.moveDir.x * this.acceleration * deltaTime;
+        this.position.y += this.moveDir.y * this.acceleration * deltaTime;
     }
 
 
