@@ -32,7 +32,9 @@ class Joystick{
         };
 
         this.touchActive = false;
-        this.r = new Render(25, 25, '');
+        this.fr = new Render(25, 25, 'JoystickMain.png');
+
+        this.br = new Render(50, 50, 'JoystickBkg.png');
     }
 
     OnClick(posX, posY){
@@ -107,8 +109,11 @@ class Joystick{
     onRender(){
         if(this.touchActive)
         {
-            this.r.RenderCircle(this.firstTouch.x, this.firstTouch.y, "Blue");
-            this.r.RenderCircle(this.firstTouch.x + this.dist.x, this.firstTouch.y + this.dist.y, "Blue");
+            this.br.RenderImage(this.firstTouch.x, this.firstTouch.y);
+
+            this.fr.RenderImage(this.firstTouch.x + this.dist.x, this.firstTouch.y + this.dist.y);
+            //this.r.RenderCircle(this.firstTouch.x, this.firstTouch.y, "Blue");
+            //this.r.RenderCircle(this.firstTouch.x + this.dist.x, this.firstTouch.y + this.dist.y, "Blue");
         }
 
     }

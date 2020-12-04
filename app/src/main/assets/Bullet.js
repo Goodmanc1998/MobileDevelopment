@@ -1,13 +1,16 @@
 class Bullet{
 
-    constructor(width, height, path){
+    constructor(width, height, path, dmg){
 
         this.m = new Movement();
 
-        this.r = new Render(width, height, path)
+        this.r = new Render(width, height, path);
 
-        this.aliveTime = 0;
+        this.damage = dmg;
 
+        this.used = false;
+
+        this.collision = new CollisionDetection();
     }
 
     Start(posX, posY, acc, dirX, dirY){
@@ -19,7 +22,9 @@ class Bullet{
     Update(){
         this.m.Move();
 
-        this.aliveTime += deltaTime;
+        this.collision.position.x = this.m.position.x;
+        this.collision.position.y = this.m.position.y;
+
     }
 
     Render(){

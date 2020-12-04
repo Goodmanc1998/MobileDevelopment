@@ -21,8 +21,8 @@ class Movement{
     }
 
     Move(){
-        this.position.x += this.moveDir.x * this.acceleration * deltaTime;
-        this.position.y += this.moveDir.y * this.acceleration * deltaTime;
+        this.position.x += Math.floor(this.moveDir.x * this.acceleration * deltaTime);
+        this.position.y += Math.floor(this.moveDir.y * this.acceleration * deltaTime);
     }
 
 
