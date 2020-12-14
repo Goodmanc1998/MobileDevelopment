@@ -1,6 +1,6 @@
 class Bullet{
 
-    constructor(width, height, path, dmg){
+    constructor(width, height, path, dmg, type){
 
         this.m = new Movement();
 
@@ -9,6 +9,8 @@ class Bullet{
         this.damage = dmg;
 
         this.used = false;
+
+        this.type = type;
 
         this.collision = new CollisionDetection();
     }

@@ -1,10 +1,12 @@
 class Gun{
 
-    constructor(shootDelay, path, heightDiff, dmg, dirX, dirY, acc){
+    constructor(shootDelay, path, heightDiff, dmg, dirX, dirY, acc, type, size){
         this.canShoot = false;
         this.hDiff = heightDiff;
 
         this.bullets = [];
+
+        this.bulRemove = [];
 
         this.currentShootTime = 0;
         this.shootDelay = shootDelay;
@@ -20,6 +22,12 @@ class Gun{
 
         this.bulletAcc = acc;
 
+        this.type = type;
+
+        this.size = size;
+
+        this.active = true;
+
 
 
     }
@@ -29,7 +37,12 @@ class Gun{
     Update(posX, posY){
         this.currentShootTime += deltaTime;
 
-        if(this.currentShootTime >= this.shootDelay)
+        if(this.bulRemove.length > 0)
+        {
+            this.RemoveBullet();
+        }
+
+        if(this.currentShootTime >= this.shootDelay && this.active == true)
         {
             this.Shoot(posX, posY);
 
@@ -42,15 +55,17 @@ class Gun{
         {
             for(this.i = 0; this.i < this.bullets.length; this.i++)
             {
+                this.CollisionCheck(this.i);
+
                 this.bullets[this.i].Update();
 
-                this.CollisionCheck(this.i);
+
 
                 if(this.bullets[this.i].m.position.y > canvas.height + 50 || this.bullets[this.i].m.position.y < -50 )
                 {
-                    //this.RemoveBullet(i);
+                    this.bulRemove.push(this.i);
                     this.bullets[this.i].used = true;
-                    this.bullets.splice(this.i, 1);
+
                 }
             }
         }
@@ -59,7 +74,7 @@ class Gun{
     Shoot(posX, posY){
         if(this.bullets.length <= this.maxBullets)
         {
-            this.bullets.push(new Bullet(8, 8, this.imgPath, this.dmg));
+            this.bullets.push(new Bullet(this.size, this.size, this.imgPath, this.dmg, this.type));
             this.bullets[this.bullets.length -1].Start(posX, posY - this.hDiff, this.bulletAcc, this.dirX, this.dirY);
 
         }
@@ -69,21 +84,45 @@ class Gun{
 
     CollisionCheck(index){
 
-        for(this.e = 0; this.e < waveMgr.enBasics.length; this.e++)
+        if(this.bullets[index].type == 'F')
         {
-            if(this.bullets[index].collision.collisionBasicMath(waveMgr.enBasics[this.e].m.position.x, waveMgr.enBasics[this.e].m.position.y) == true)
+            for(this.e = 0; this.e < waveMgr.enBasics.length; this.e++)
             {
-                waveMgr.enBasics[this.e].h.TakeDamage(this.dmg);
+                if(this.bullets[index].collision.collisionBasicMath(waveMgr.enBasics[this.e].m.position.x, waveMgr.enBasics[this.e].m.position.y, waveMgr.enBasics[this.e].r.spriteWidth) == true)
+                {
+                    waveMgr.enBasics[this.e].h.TakeDamage(this.dmg);
 
-                this.bullets[index].used = true;
-                this.bullets.splice(index, 1);
+                    this.bullets[index].used = true;
+                    this.bulRemove.push(index);
+                }
             }
         }
 
+        if(this.bullets[index].type == 'E')
+        {
+            if(this.bullets[index].collision.collisionBasicMath(player.m.position.x, player.m.position.x, player.r.spriteWidth) == true)
+            {
+                player.h.TakeDamage(this.dmg);
+
+                this.bullets[index].used = true;
+                this.bulRemove.push(index);
+
+            }
+
+        }
+
+
     }
 
-    RemoveBullet(i){
-        this.bullets.splice(i, 1);
+    RemoveBullet(){
+
+        for(this.i = 0; this.i < this.bulRemove.length; this.i++)
+        {
+            this.bullets.splice(this.bulRemove[this.i], 1);
+        }
+
+        this.bulRemove.splice(0, this.bulRemove.length);
+
     }
 
     Render(){

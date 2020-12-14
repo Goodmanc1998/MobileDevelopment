@@ -18,9 +18,6 @@ let m;
 
 let pr;
 
-let bullet;
-let playerGun;
-
 let bkg;
 
 let player;
@@ -42,14 +39,14 @@ function load(){
 
     bkg = new Render(canvas.width, canvas.height, 'backgroundBasic.png');
 
-    waveMgr = new WaveManager(10, 3);
+    waveMgr = new WaveManager(20, 2);
 
 
 
     StartPlayer();
 
 
-        myInterval = setInterval(Update, 1000 / FPS);
+    myInterval = setInterval(Update, 1000 / FPS);
 }
 
 function StartPlayer(){
@@ -120,7 +117,7 @@ function RenderMain(){
 
     //waveMgr.enBasics.length
 
-
+    /*
     for(i = 0; i < player.gun.bullets.length; i++)
     {
         canvasContext.fillText(i + " Bull Y: " + player.gun.bullets[i].m.position.y, canvas.width/2 +100, canvas.height/2 + (i * 50));
@@ -133,6 +130,10 @@ function RenderMain(){
 
     canvasContext.fillText(player.gun.bullets.length, canvas.width/2, 100);
     //canvasContext.fillText(waveMgr.enBasics[0].h.currentHealth, canvas.width/2, canvas.height/2 - 100);
+
+    */
+
+        canvasContext.fillText(player.h.currentHealth, canvas.width/2, 100);
 
 }
 

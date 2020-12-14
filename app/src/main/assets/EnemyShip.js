@@ -6,37 +6,47 @@ class EnemyShip{
 
         this.m = new Movement();
 
-        this.gun = new Gun(10000, bulletPath, -this.r.spriteHeight / 2, 10, 0, 1, 120);
-
         this.h = new Health(maxHealth);
 
-        this.aliveTime = 0;
+        this.gun = new Gun(1.5, bulletPath, this.r.spriteHeight / 2, 100, 0, 1, 150, 'E', 8);
 
 
+        this.aliveTime = true;
 
     }
 
     Start(posX, posY, acc){
         this.m.Start(posX, posY, acc);
+
+        this.m.moveDir.x = 0;
+        this.m.moveDir.y = 1;
     }
 
     Update(){
 
-        this.m.moveDir.x = 0;
-        this.m.moveDir.y = 1;
 
-        this.m.Move();
-
-        this.gun.Update(this.m.position.x, this.m.position.y);
+        if(this.h.currentHealth > 0)
+        {
+            this.m.Move();
+        }
+        else
+        {
+            this.gun.active = false;
+        }
 
         this.aliveTime += deltaTime;
+
+        this.gun.Update(this.m.position.x, this.m.position.y);
 
 
     }
 
 
     Render(){
+
+
         this.r.RenderImage(this.m.position.x, this.m.position.y);
-        this.gun.Render()
+
+        this.gun.Render();
     }
 }

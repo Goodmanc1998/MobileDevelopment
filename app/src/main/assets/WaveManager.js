@@ -41,7 +41,7 @@ class WaveManager{
                     this.enBasics.splice(this.i, 1);
                 }
 
-                if(this.enBasics[this.i].h.currentHealth <= 0)
+                if(this.enBasics[this.i].h.currentHealth <= 0 && this.enBasics[this.i].gun.bullets.length <= 0)
                 {
                     this.enBasics.splice(this.i, 1);
                 }

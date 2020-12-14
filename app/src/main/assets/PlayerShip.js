@@ -6,7 +6,7 @@ class PlayerShip{
 
         this.m = new Movement();
 
-        this.gun = new Gun(3, bulletPath, this.r.spriteHeight, 100, 0, -1, 100);
+        this.gun = new Gun(1.5, bulletPath, -this.r.spriteHeight / 2, 100, 0, -1, 150, 'F', 8);
 
         this.h = new Health(maxHealth);
 
