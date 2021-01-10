@@ -8,7 +8,7 @@ class EnemyShip{
 
         this.h = new Health(maxHealth);
 
-        this.gun = new Gun(1.5, bulletPath, this.r.spriteHeight / 2, 100, 0, 1, 150, 'E', 8);
+        this.gun = new Gun(1.5, bulletPath, this.r.spriteHeight / 2, 10, 0, 1, 150, 'E', 8);
 
 
         this.aliveTime = true;
@@ -44,8 +44,11 @@ class EnemyShip{
 
     Render(){
 
+        if(this.h.currentHealth > 0)
+        {
+            this.r.RenderImage(this.m.position.x, this.m.position.y);
+        }
 
-        this.r.RenderImage(this.m.position.x, this.m.position.y);
 
         this.gun.Render();
     }

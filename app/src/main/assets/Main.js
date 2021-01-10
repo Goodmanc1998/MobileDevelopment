@@ -11,6 +11,10 @@ var deltaTime;
 
 var playerHealth = 100;
 
+
+var GameStates = ["Menu", "Playing"]
+var currentGameState = "Menu"
+
 var enemy = [];
 
 let js;
@@ -24,49 +28,52 @@ let player;
 
 let waveMgr;
 
-
+let button;
+let input;
 
 function load(){
 
     InitCanvas();
 
+    //Joystick
     js = new Joystick();
-
-
+    //Player
     player = new PlayerShip('ShipSpaceRocket.png', 'BulletF.png', 100);
-
-    //enemyBasic = new EnemyShip('SpaceShip.png', 'Bullet.png', 10);
-
+    //Background
     bkg = new Render(canvas.width, canvas.height, 'backgroundBasic.png');
-
+    //WaveManager
     waveMgr = new WaveManager(20, 2);
 
+    button = new Button(canvas.width / 2, canvas.height / 2 - 100, 100, 50, 'Button.png');
+    input = new Input();
+    //Starting the Player
 
 
-    StartPlayer();
-
-
+    //Calling the Update function within a set interval
     myInterval = setInterval(Update, 1000 / FPS);
 }
 
-function StartPlayer(){
+//Starting the Player
+function GameStart(){
+    currentGameState = "Playing";
     player.Start(canvas.width / 2, canvas.height / 2, 500);
+    waveMgr.Start();
 }
 
+//Starting the Canvas
 function InitCanvas(){
+    //Canvas Context
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
-
+    //Canvas Size
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
+    //Touch functions
     if(canvas.getContext){
         canvas.addEventListener("touchstart", touchDown, false);
         canvas.addEventListener("touchmove", touchXY, true);
         canvas.addEventListener("touchend", touchUp, false);
     }
-
-
 }
 
 function Update() {
@@ -74,21 +81,18 @@ function Update() {
     //Calculating Time
     CalculateTime();
 
-        //checkForCollisions();
+    if(currentGameState == "Playing")
+    {
+            //Updating the Player
+            player.Update();
 
-    //Updating the players Joystick
-    player.m.moveDir.x = js.dir.x;
-    player.m.moveDir.y = js.dir.y;
-
-    //Updating the Player
-    player.Update();
-
-    waveMgr.Update();
-
-
-
-
-
+        //Updating Wave manager
+        waveMgr.Update();
+    }
+    if(button.Update())
+    {
+        GameStart();
+    }
 
     //Rendering Updates
     RenderMain();
@@ -99,6 +103,7 @@ function Update() {
 
 
 function RenderMain(){
+
     //Clearing Canvas
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
     //Rendering Background First
@@ -112,31 +117,21 @@ function RenderMain(){
 
     waveMgr.Render();
 
+    button.Render();
+
     //Setting up text for debug
     styleText('white', '20px Courier New', 'center', 'middle');
 
-    //waveMgr.enBasics.length
 
-    /*
-    for(i = 0; i < player.gun.bullets.length; i++)
-    {
-        canvasContext.fillText(i + " Bull Y: " + player.gun.bullets[i].m.position.y, canvas.width/2 +100, canvas.height/2 + (i * 50));
-    }
-
-    for(i = 0; i < waveMgr.enBasics.length; i++)
-    {
-        canvasContext.fillText(i + " EnnY: " + waveMgr.enBasics[i].m.position.y + "H: " + waveMgr.enBasics[i].h.currentHealth, canvas.width/2 -150, canvas.height/2 + (i * 50));
-    }
-
-    canvasContext.fillText(player.gun.bullets.length, canvas.width/2, 100);
-    //canvasContext.fillText(waveMgr.enBasics[0].h.currentHealth, canvas.width/2, canvas.height/2 - 100);
-
-    */
-
-        canvasContext.fillText(player.h.currentHealth, canvas.width/2, 100);
+    canvasContext.fillText(currentGameState, canvas.width/2, 100);
 
 }
 
+function ClampNumber(num, min, max)
+{
+    var clampNo = Math.max(Math.min(num, Math.max(min, max)), Math.min(min, max));
+    return clampNo;
+}
 
 function CalculateTime(){
         now = Date.now();
@@ -148,12 +143,13 @@ function touchUp(evt) {
      evt.preventDefault();
      // Terminate touch path
      js.onRelease();
+     input.onRelease();
 }
 
 function touchDown(evt) {
     evt.preventDefault();
-
     js.OnClick(evt.touches[0].pageX, evt.touches[0].pageY)
+    input.OnClick(evt.touches[0].pageX, evt.touches[0].pageY);
 }
 
 function touchXY(evt) {
@@ -162,6 +158,11 @@ function touchXY(evt) {
     if(js.touchActive == true)
     {
         js.OnHold(evt.touches[0].pageX, evt.touches[0].pageY);
+    }
+
+    if(input.touchActive == true)
+    {
+        input.OnHold(evt.touches[0].pageX, evt.touches[0].pageY);
     }
 }
 

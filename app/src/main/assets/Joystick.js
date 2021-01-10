@@ -112,8 +112,6 @@ class Joystick{
             this.br.RenderImage(this.firstTouch.x, this.firstTouch.y);
 
             this.fr.RenderImage(this.firstTouch.x + this.dist.x, this.firstTouch.y + this.dist.y);
-            //this.r.RenderCircle(this.firstTouch.x, this.firstTouch.y, "Blue");
-            //this.r.RenderCircle(this.firstTouch.x + this.dist.x, this.firstTouch.y + this.dist.y, "Blue");
         }
 
     }

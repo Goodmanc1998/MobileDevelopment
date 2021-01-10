@@ -13,10 +13,12 @@ class WaveManager{
 
         this.currentTime = 0;
 
+        this.active = false;
+
     }
 
     Start(){
-
+        this.active = true;
     }
 
     Update(){

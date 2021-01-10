@@ -20,9 +20,9 @@ class CollisionDetection{
 
 
 
-        if(this.dist.x <= size / 2 && this.dist.x >= -size / 2)
+        if(this.dist.x <= (size / 2) && this.dist.x >= (-size / 2))
         {
-            if(this.dist.y <=  size / 2 && this.dist.y >= -size / 2)
+            if(this.dist.y <=  (size / 2) && this.dist.y >= (-size / 2))
             {
                 return true;
                 //return this.collisionMath(this.distX, this.distY);
