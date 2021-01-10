@@ -31,6 +31,11 @@ let waveMgr;
 let button;
 let input;
 
+let healthUI;
+let pScore;
+
+let background;
+
 function load(){
 
     InitCanvas();
@@ -40,14 +45,17 @@ function load(){
     //Player
     player = new PlayerShip('ShipSpaceRocket.png', 'BulletF.png', 100);
     //Background
-    bkg = new Render(canvas.width, canvas.height, 'backgroundBasic.png');
+    background = new Background();
     //WaveManager
     waveMgr = new WaveManager(20, 2);
 
     button = new Button(canvas.width / 2, canvas.height / 2 - 100, 100, 50, 'Button.png');
     input = new Input();
+
+    healthUI = new InGameUI(50, 25, 100, 50, player.h.currentHealth, 'Health.png');
     //Starting the Player
 
+    pScore = new Score();
 
     //Calling the Update function within a set interval
     myInterval = setInterval(Update, 1000 / FPS);
@@ -68,6 +76,9 @@ function InitCanvas(){
     //Canvas Size
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
+   canvas.fillStyle = "black";
+
     //Touch functions
     if(canvas.getContext){
         canvas.addEventListener("touchstart", touchDown, false);
@@ -81,6 +92,8 @@ function Update() {
     //Calculating Time
     CalculateTime();
 
+    background.Update();
+
     if(currentGameState == "Playing")
     {
             //Updating the Player
@@ -88,11 +101,16 @@ function Update() {
 
         //Updating Wave manager
         waveMgr.Update();
+
+        healthUI.text = player.h.currentHealth;
     }
     if(button.Update())
     {
         GameStart();
     }
+
+
+
 
     //Rendering Updates
     RenderMain();
@@ -107,23 +125,39 @@ function RenderMain(){
     //Clearing Canvas
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
     //Rendering Background First
-    bkg.RenderImage(canvas.width/ 2, canvas.height / 2);
+    background.Render();
 
-    //Rendering Joystick
-    js.onRender();
+    if(currentGameState == GameStates[1])
+    {
+        //Rendering Joystick
+        js.onRender();
 
-    //Rendering Player
-    player.Render();
+        //Rendering Player
+        player.Render();
 
-    waveMgr.Render();
+        waveMgr.Render();
 
-    button.Render();
+        styleText('black', '20px Courier New', 'center', 'middle');
+
+        healthUI.Render();
+    }
+
+    if(currentGameState == GameStates[0])
+    {
+        button.Render();
+    }
+
+
+
+
+
 
     //Setting up text for debug
+
+
     styleText('white', '20px Courier New', 'center', 'middle');
 
-
-    canvasContext.fillText(currentGameState, canvas.width/2, 100);
+    canvasContext.fillText(pScore.currentScore, canvas.width/2, 100);
 
 }
 

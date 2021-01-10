@@ -23,7 +23,6 @@ class Button{
         {
             if(input.firstTouch.y > this.p.position.y - (this.size.height / 2) && input.firstTouch.y < this.p.position.y + (this.size.height / 2))
             {
-                //currentGameState = "Playing";
                 return true;
             }
             else

@@ -8,10 +8,11 @@ class EnemyShip{
 
         this.h = new Health(maxHealth);
 
-        this.gun = new Gun(1.5, bulletPath, this.r.spriteHeight / 2, 10, 0, 1, 150, 'E', 8);
+        this.gun = new Gun(1.5, bulletPath, this.r.spriteHeight / 2, 10, 0, 1, 200, 'E', 8);
 
 
         this.aliveTime = true;
+        this.scoreAdded = false;
 
     }
 
@@ -32,6 +33,11 @@ class EnemyShip{
         else
         {
             this.gun.active = false;
+            if(this.scoreAdded != true)
+            {
+                this.scoreAdded = true;
+                pScore.UpdateScore(10);
+            }
         }
 
         this.aliveTime += deltaTime;
