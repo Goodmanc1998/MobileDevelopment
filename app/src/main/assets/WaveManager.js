@@ -36,11 +36,6 @@ class WaveManager{
 
         this.currentTime += deltaTime;
 
-        if(this.waveFinished = true)
-        {
-
-        }
-
         if(this.currentTime >= this.timeDiff && this.totalEnemy < this.totalWave)
         {
             this.CreateEnemy();

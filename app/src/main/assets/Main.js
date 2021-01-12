@@ -12,7 +12,7 @@ var deltaTime;
 var playerHealth = 100;
 
 
-var GameStates = ["Menu", "Playing"]
+var GameStates = ["Menu", "Playing", "Death"]
 var currentGameState = "Menu"
 
 var enemy = [];
@@ -46,7 +46,7 @@ function load(){
     //Joystick
     js = new Joystick();
     //Player
-    player = new PlayerShip('ShipSpaceRocket.png', 'BulletF.png', 100);
+    player = new PlayerShip('ShipSpaceRocket.png', 'BulletF.png', 10);
     //Background
     background = new Background();
     background.Start();
@@ -54,22 +54,24 @@ function load(){
     waveMgr = new WaveManager(5, 2);
 
     button = new Button(canvas.width / 2, canvas.height / 2 - 100, 100, 50, 'Button.png');
+
+    deathButton = new Button(canvas.width / 2, canvas.height / 2 + 200, 100, 50, 'Button.png');
+    escButton = new Button(canvas.width - 50, 25, 100, 50, 'Button.png');
+
     input = new Input();
     pScore = new Score();
 
     healthUI = new InGameUI(50, 25, 100, 50, player.h.currentHealth, 'Health.png');
-    scoreUI = new InGameUI(canvas.width - 50, 25, 100, 50, pScore.currentScore, 'Health.png')
+    scoreUI = new InGameUI(50, 75, 100, 50, pScore.currentScore, 'Health.png')
     //Starting the Player
-
-
 
     music = new Sound("Background.mp3");
 
-
     //music.Loop();
+
     //Calling the Update function within a set interval
     myInterval = setInterval(Update, 1000 / FPS);
-    StartMusic();
+    MenuStart();
 }
 
 function StartMusic(){
@@ -78,10 +80,21 @@ function StartMusic(){
 
 //Starting the Player
 function GameStart(){
+    currentGameState = GameStates[1];
     currentGameState = "Playing";
     player.Start(canvas.width / 2, canvas.height / 2, 500);
     waveMgr.Start();
-        music.play();
+    pScore.Start();
+}
+
+function MenuStart(){
+    currentGameState = GameStates[0];
+    music.play();
+}
+
+function DeathStart(){
+    currentGameState = GameStates[2];
+    pScore.StoreScore();
 }
 
 //Starting the Canvas
@@ -110,21 +123,40 @@ function Update() {
 
     background.Update();
 
-    if(currentGameState == "Playing")
+    if(currentGameState == GameStates[1])
     {
-            //Updating the Player
-            player.Update();
+        //Updating the Player
+        player.Update();
 
         //Updating Wave manager
         waveMgr.Update();
 
         healthUI.text = player.h.currentHealth;
         scoreUI.text = pScore.currentScore;
+
+        if(escButton.Update())
+        {
+            DeathStart();
+        }
     }
-    if(button.Update())
+
+    if(currentGameState == GameStates[0])
     {
-        GameStart();
+        if(button.Update())
+        {
+            GameStart();
+        }
     }
+
+
+    if(currentGameState == GameStates[2])
+    {
+        if(deathButton.Update())
+        {
+            MenuStart();
+        }
+    }
+
 
 
 
@@ -158,6 +190,8 @@ function RenderMain(){
 
         healthUI.Render();
         scoreUI.Render();
+
+        escButton.Render();
     }
 
     if(currentGameState == GameStates[0])
@@ -165,8 +199,13 @@ function RenderMain(){
         button.Render();
     }
 
+    if(currentGameState == GameStates[2])
+    {
+        deathButton.Render();
 
-
+        canvasContext.fillText(pScore.currentScore, canvas.width/2, 200);
+        canvasContext.fillText(pScore.earnedScore, canvas.width/2, 100);
+    }
 
 
 
@@ -175,8 +214,8 @@ function RenderMain(){
 
     styleText('white', '20px Courier New', 'center', 'middle');
 
-    canvasContext.fillText(waveMgr.enBasics.length, canvas.width/2, 100);
-    canvasContext.fillText(waveMgr.totalEnemy, canvas.width/2, 200);
+    //canvasContext.fillText(waveMgr.enBasics.length, canvas.width/2, 100);
+    //canvasContext.fillText(waveMgr.totalEnemy, canvas.width/2, 200);
 
 }
 
