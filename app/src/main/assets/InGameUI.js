@@ -1,6 +1,6 @@
 class InGameUI{
 
-    constructor(posX, posY, w, h, textVar, uiPath){
+    constructor(posX, posY, w, h, textVar, uiPath, txt){
 
         this.p = new Movement();
 
@@ -15,6 +15,7 @@ class InGameUI{
         };
 
         this.text = textVar;
+        this.textW = txt;
 
     }
 
@@ -24,6 +25,6 @@ class InGameUI{
 
     Render(){
         this.r.RenderImage(this.p.position.x, this.p.position.y);
-        canvasContext.fillText(this.text, this.p.position.x, this.p.position.y);
+        canvasContext.fillText(this.textW + this.text, this.p.position.x, this.p.position.y);
     }
 }

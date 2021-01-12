@@ -13,10 +13,10 @@ class CollisionDetection{
         };
     }
 
-    collisionBasicMath(entityX, EntityY, size){
+    collisionBasicMath(entityX, entityY, size){
 
         this.dist.x = entityX - this.position.x;
-        this.dist.y = EntityY - this.position.y;
+        this.dist.y = entityY - this.position.y;
 
 
 
@@ -25,12 +25,15 @@ class CollisionDetection{
             if(this.dist.y <=  (size / 2) && this.dist.y >= (-size / 2))
             {
                 return true;
-                //return this.collisionMath(this.distX, this.distY);
             }
             else
             {
                 return false;
             }
+        }
+        else
+        {
+            return false;
         }
     }
 }

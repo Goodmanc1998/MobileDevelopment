@@ -9,6 +9,10 @@ class PlayerShip{
 
         this.deathAnimation = new Animation(96, 96, 'Explosion.png', 10,0,0.1,10);
 
+        this.currentLevel = 1;
+
+        this.s = new Sound("Explosion.mp3");
+        this.soundP = false;
 
     }
 
@@ -17,6 +21,9 @@ class PlayerShip{
         //Placing player at correct position
         this.m.Start(posX, posY, acc);
         this.h.currentHealth = this.h.maxHealth;
+
+        this.gun.damage = 5 + Math.floor((10 * this.currentLevel) / 2);
+        this.h.maxHealth = 95 + Math.floor((10 * this.currentLevel) / 2);
     }
 
     Update(){
@@ -51,10 +58,15 @@ class PlayerShip{
         if(this.h.currentHealth <= 0)
         {
             this.deathAnimation.AnimateFrame(this.m.position.x, this.m.position.y);
+            if(!this.soundP)
+            {
+                this.s.Play();
+            }
         }
         else
         {
             this.r.RenderImage(this.m.position.x, this.m.position.y);
+
         }
         this.gun.Render()
     }

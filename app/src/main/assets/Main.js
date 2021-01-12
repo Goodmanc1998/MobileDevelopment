@@ -46,23 +46,31 @@ function load(){
     //Joystick
     js = new Joystick();
     //Player
-    player = new PlayerShip('ShipSpaceRocket.png', 'BulletF.png', 10);
+    player = new PlayerShip('ShipSpaceRocket.png', 'BulletF.png', 100);
     //Background
     background = new Background();
     background.Start();
     //WaveManager
     waveMgr = new WaveManager(5, 2);
 
-    button = new Button(canvas.width / 2, canvas.height / 2 - 100, 100, 50, 'Button.png');
+    button = new Button(canvas.width / 2, canvas.height / 2 - 100, 100, 50, 'Button.png', "Play");
+    lvlUpButton = new Button(canvas.width / 2, canvas.height / 2 + 100, 100, 50, 'Button.png', "Level Up");
 
-    deathButton = new Button(canvas.width / 2, canvas.height / 2 + 200, 100, 50, 'Button.png');
-    escButton = new Button(canvas.width - 50, 25, 100, 50, 'Button.png');
+    deathButton = new Button(canvas.width / 2, canvas.height / 2 - 100, 100, 50, 'Button.png', "Menu");
+    escButton = new Button(canvas.width - 50, 25, 100, 50, 'Button.png', "Escape");
+
 
     input = new Input();
     pScore = new Score();
 
-    healthUI = new InGameUI(50, 25, 100, 50, player.h.currentHealth, 'Health.png');
-    scoreUI = new InGameUI(50, 75, 100, 50, pScore.currentScore, 'Health.png')
+    healthUI = new InGameUI(50, 25, 100, 50, player.h.currentHealth, 'Health.png', "H:");
+    scoreUI = new InGameUI(50, 75, 100, 50, pScore.currentScore, 'Score.png', "S:");
+    totalScoreUI = new InGameUI(canvas.width / 2 - 100, 200, 100, 50, pScore.earnedScore, 'Score.png', "TS:");
+    levelScoreUI = new InGameUI(canvas.width / 2 + 100, 200, 100, 50, player.currentLevel, 'Score.png', "Level:");
+
+    scoreTotalUI = new InGameUI(canvas.width / 2 + 100, 200, 150, 50, pScore.earnedScore, 'Score.png', "Total:");
+    scoreEarnedUI = new InGameUI(canvas.width / 2 - 100, 200, 150, 50, pScore.currentScore, 'Score.png', "Earned:");
+
     //Starting the Player
 
     music = new Sound("Background.mp3");
@@ -74,10 +82,6 @@ function load(){
     MenuStart();
 }
 
-function StartMusic(){
-
-}
-
 //Starting the Player
 function GameStart(){
     currentGameState = GameStates[1];
@@ -85,11 +89,13 @@ function GameStart(){
     player.Start(canvas.width / 2, canvas.height / 2, 500);
     waveMgr.Start();
     pScore.Start();
+    music.Play();
+    //music.Loop();
 }
 
 function MenuStart(){
     currentGameState = GameStates[0];
-    music.play();
+    music.Play();
 }
 
 function DeathStart(){
@@ -113,6 +119,10 @@ function InitCanvas(){
         canvas.addEventListener("touchstart", touchDown, false);
         canvas.addEventListener("touchmove", touchXY, true);
         canvas.addEventListener("touchend", touchUp, false);
+
+        canvas.addEventListener("mousedown", touchDown, false);
+        canvas.addEventListener("mouseup", touchUp, false);
+        canvas.addEventListener("mousemove", touchXY, true);
     }
 }
 
@@ -142,15 +152,26 @@ function Update() {
 
     if(currentGameState == GameStates[0])
     {
+        totalScoreUI.text = pScore.earnedScore;
+        levelScoreUI.text = player.currentLevel;
+
         if(button.Update())
         {
             GameStart();
+        }
+
+        if(lvlUpButton.Update())
+        {
+            pScore.UpdateLevel();
         }
     }
 
 
     if(currentGameState == GameStates[2])
     {
+        scoreTotalUI.text = pScore.earnedScore;
+        scoreEarnedUI.text = pScore.currentScore;
+
         if(deathButton.Update())
         {
             MenuStart();
@@ -163,6 +184,7 @@ function Update() {
 
     //Rendering Updates
     RenderMain();
+    input.tap = false;
 }
 
 
@@ -176,6 +198,8 @@ function RenderMain(){
     //Rendering Background First
     background.Render();
 
+    styleText('white', '20px Times New Roman', 'center', 'middle');
+
     if(currentGameState == GameStates[1])
     {
         //Rendering Joystick
@@ -186,8 +210,6 @@ function RenderMain(){
 
         waveMgr.Render();
 
-        styleText('black', '20px Courier New', 'center', 'middle');
-
         healthUI.Render();
         scoreUI.Render();
 
@@ -196,26 +218,26 @@ function RenderMain(){
 
     if(currentGameState == GameStates[0])
     {
+        totalScoreUI.Render();
+        levelScoreUI.Render();
         button.Render();
+
+        lvlUpButton.Render();
     }
 
     if(currentGameState == GameStates[2])
     {
         deathButton.Render();
-
-        canvasContext.fillText(pScore.currentScore, canvas.width/2, 200);
-        canvasContext.fillText(pScore.earnedScore, canvas.width/2, 100);
+        scoreTotalUI.Render();
+        scoreEarnedUI.Render();
     }
 
 
 
     //Setting up text for debug
 
-
-    styleText('white', '20px Courier New', 'center', 'middle');
-
-    //canvasContext.fillText(waveMgr.enBasics.length, canvas.width/2, 100);
-    //canvasContext.fillText(waveMgr.totalEnemy, canvas.width/2, 200);
+    //canvasContext.fillText(waveMgr.enBasics[0].gun.bullets[0].collision.dist.x, canvas.width/2, 100);
+    //canvasContext.fillText(waveMgr.enBasics[0].gun.bullets[0].collision.dist.x, canvas.width/2 + 50, 100);
 
 }
 
@@ -240,8 +262,12 @@ function touchUp(evt) {
 
 function touchDown(evt) {
     evt.preventDefault();
-    js.OnClick(evt.touches[0].pageX, evt.touches[0].pageY)
+    js.OnClick(evt.clientX, evt.clientY);
+    input.OnClick(evt.clientX, evt.clientY);
+
+    js.OnClick(evt.touches[0].pageX, evt.touches[0].pageY);
     input.OnClick(evt.touches[0].pageX, evt.touches[0].pageY);
+
 }
 
 function touchXY(evt) {
@@ -249,11 +275,14 @@ function touchXY(evt) {
 
     if(js.touchActive == true)
     {
+        js.OnHold(evt.clientX, evt.clientY);
+
         js.OnHold(evt.touches[0].pageX, evt.touches[0].pageY);
     }
 
     if(input.touchActive == true)
     {
+        input.OnHold(evt.clientX, evt.clientY);
         input.OnHold(evt.touches[0].pageX, evt.touches[0].pageY);
     }
 }

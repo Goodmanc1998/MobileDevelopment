@@ -44,11 +44,11 @@ class Gun{
         {
             for(this.i = 0; this.i < this.bullets.length; this.i++)
             {
-                this.CollisionCheck(this.i);
+
 
                 this.bullets[this.i].Update();
 
-
+                this.CollisionCheck(this.i);
 
                 if(this.bullets[this.i].m.position.y > canvas.height + 50 || this.bullets[this.i].m.position.y < -50 )
                 {
@@ -63,7 +63,7 @@ class Gun{
     Shoot(posX, posY){
         if(this.bullets.length <= this.maxBullets)
         {
-            this.s.play();
+            this.s.Play();
             this.bullets.push(new Bullet(this.size, this.size, this.imgPath, this.dmg, this.type));
             this.bullets[this.bullets.length -1].Start(posX, posY - this.hDiff, this.bulletAcc, this.dirX, this.dirY);
 
@@ -90,7 +90,7 @@ class Gun{
 
         if(this.bullets[index].type == 'E')
         {
-            if(this.bullets[index].collision.collisionBasicMath(player.m.position.x, player.m.position.x, player.r.spriteWidth) == true)
+            if(this.bullets[index].collision.collisionBasicMath(player.m.position.x, player.m.position.y, player.r.spriteWidth) == true)
             {
                 player.h.TakeDamage(this.dmg);
 

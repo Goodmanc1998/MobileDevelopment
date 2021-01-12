@@ -8,13 +8,15 @@ class EnemyShip{
 
         this.h = new Health(maxHealth);
 
-        this.gun = new Gun(1.5, bulletPath, -this.r.spriteHeight / 2, damage, 0, 1, 200, 'E', 8, "PlayerShoot.wav");
+        this.gun = new Gun(1.5, bulletPath, -this.r.spriteHeight / 2, damage, 0, 1, 150, 'E', 8, "PlayerShoot.wav");
 
 
         this.aliveTime = true;
         this.scoreAdded = false;
 
         this.deathAnimation = new Animation(96, 96, 'Explosion.png', 10,0,0.1,10);
+        this.s = new Sound("Explosion.mp3");
+        this.soundP = false;
 
     }
 
@@ -60,6 +62,11 @@ class EnemyShip{
         else
         {
             this.deathAnimation.AnimateFrame(this.m.position.x, this.m.position.y);
+            if(!this.soundP)
+            {
+                this.soundP = true;
+                this.s.Play();
+            }
         }
 
 

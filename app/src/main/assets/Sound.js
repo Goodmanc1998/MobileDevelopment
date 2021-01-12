@@ -8,13 +8,12 @@ class Sound{
         this.sound.style.display = "none";
         document.body.appendChild(this.sound);
 
-        this.play = function(){
+        this.Play = function(){
             this.sound.play();
         }
-    }
 
-
-    Loop(){
-        this.sound.Loop();
+        this.Loop = function(){
+            this.sound.Loop();
+        }
     }
 }

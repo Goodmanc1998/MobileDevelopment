@@ -1,6 +1,6 @@
 class Button{
 
-    constructor(posX, posY, w, h, buttonPath){
+    constructor(posX, posY, w, h, buttonPath, buttonText){
 
         this.p = new Movement();
 
@@ -12,7 +12,11 @@ class Button{
             height : h
         };
 
+        this.text = buttonText;
+
         this.r = new Render(w, h, buttonPath);
+
+        this.s = new Sound("Click.wav")
 
 
     }
@@ -23,7 +27,11 @@ class Button{
         {
             if(input.firstTouch.y > this.p.position.y - (this.size.height / 2) && input.firstTouch.y < this.p.position.y + (this.size.height / 2))
             {
-                return true;
+                if(input.tap == true)
+                {
+                  return true;
+                  this.s.Play();
+                }
             }
             else
                 return false;
@@ -35,5 +43,6 @@ class Button{
 
     Render(){
         this.r.RenderImage(this.p.position.x, this.p.position.y);
+        canvasContext.fillText(this.text, this.p.position.x, this.p.position.y);
     }
 }

@@ -13,6 +13,7 @@ class Input{
         };
 
         this.touchActive = false;
+        this.tap = false;
     }
 
     OnClick(posX, posY){
@@ -23,6 +24,7 @@ class Input{
         if(this.touchActive != true)
         {
             this.touchActive = true;
+            this.tap = true;
         }
     }
 
