@@ -23,9 +23,12 @@ class Bullet{
 
     Update(){
         this.m.Move();
+        if(this.m.position.y > 0)
+        {
+            this.collision.position.x = this.m.position.x;
+            this.collision.position.y = this.m.position.y;
+        }
 
-        this.collision.position.x = this.m.position.x;
-        this.collision.position.y = this.m.position.y;
 
     }
 

@@ -4,7 +4,7 @@ class PlayerShip{
 
         this.r = new Render(75, 75, rocketPath);
         this.m = new Movement();
-        this.gun = new Gun(1.5, bulletPath, this.r.spriteHeight / 2, 100, 0, -1, 150, 'F', 8);
+        this.gun = new Gun(1.5, bulletPath, this.r.spriteHeight / 2, 10, 0, -1, 150, 'F', 8, "PlayerShoot.wav");
         this.h = new Health(maxHealth);
 
     }
@@ -13,6 +13,7 @@ class PlayerShip{
     Start(posX, posY, acc){
         //Placing player at correct position
         this.m.Start(posX, posY, acc);
+        this.h.currentHealth = this.h.maxHealth;
     }
 
     Update(){
@@ -30,6 +31,11 @@ class PlayerShip{
 
         //Updating the Gun
         this.gun.Update(this.m.position.x, this.m.position.y);
+
+        if(this.h.currentHealth <= 0)
+        {
+            currentGameState = "Menu";
+        }
     }
 
     Render(){

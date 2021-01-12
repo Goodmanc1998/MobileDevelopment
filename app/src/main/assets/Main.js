@@ -17,6 +17,8 @@ var currentGameState = "Menu"
 
 var enemy = [];
 
+let Music;
+
 let js;
 let m;
 
@@ -32,6 +34,7 @@ let button;
 let input;
 
 let healthUI;
+let scoreUI;
 let pScore;
 
 let background;
@@ -46,19 +49,31 @@ function load(){
     player = new PlayerShip('ShipSpaceRocket.png', 'BulletF.png', 100);
     //Background
     background = new Background();
+    background.Start();
     //WaveManager
-    waveMgr = new WaveManager(20, 2);
+    waveMgr = new WaveManager(5, 2);
 
     button = new Button(canvas.width / 2, canvas.height / 2 - 100, 100, 50, 'Button.png');
     input = new Input();
-
-    healthUI = new InGameUI(50, 25, 100, 50, player.h.currentHealth, 'Health.png');
-    //Starting the Player
-
     pScore = new Score();
 
+    healthUI = new InGameUI(50, 25, 100, 50, player.h.currentHealth, 'Health.png');
+    scoreUI = new InGameUI(canvas.width - 50, 25, 100, 50, pScore.currentScore, 'Health.png')
+    //Starting the Player
+
+
+
+    music = new Sound("Background.mp3");
+
+
+    //music.Loop();
     //Calling the Update function within a set interval
     myInterval = setInterval(Update, 1000 / FPS);
+    StartMusic();
+}
+
+function StartMusic(){
+
 }
 
 //Starting the Player
@@ -66,6 +81,7 @@ function GameStart(){
     currentGameState = "Playing";
     player.Start(canvas.width / 2, canvas.height / 2, 500);
     waveMgr.Start();
+        music.play();
 }
 
 //Starting the Canvas
@@ -103,6 +119,7 @@ function Update() {
         waveMgr.Update();
 
         healthUI.text = player.h.currentHealth;
+        scoreUI.text = pScore.currentScore;
     }
     if(button.Update())
     {
@@ -140,6 +157,7 @@ function RenderMain(){
         styleText('black', '20px Courier New', 'center', 'middle');
 
         healthUI.Render();
+        scoreUI.Render();
     }
 
     if(currentGameState == GameStates[0])
@@ -157,7 +175,8 @@ function RenderMain(){
 
     styleText('white', '20px Courier New', 'center', 'middle');
 
-    canvasContext.fillText(pScore.currentScore, canvas.width/2, 100);
+    canvasContext.fillText(waveMgr.enBasics.length, canvas.width/2, 100);
+    canvasContext.fillText(waveMgr.totalEnemy, canvas.width/2, 200);
 
 }
 

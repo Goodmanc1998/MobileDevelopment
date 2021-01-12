@@ -1,33 +1,22 @@
 class Gun{
 
-    constructor(shootDelay, path, heightDiff, dmg, dirX, dirY, acc, type, size){
+    constructor(shootDelay, path, heightDiff, dmg, dirX, dirY, acc, type, size, soundPath){
         this.canShoot = false;
         this.hDiff = heightDiff;
-
         this.bullets = [];
-
         this.bulRemove = [];
-
         this.currentShootTime = 0;
         this.shootDelay = shootDelay;
-
         this.maxBullets = 10;
-
         this.dmg = dmg;
-
         this.imgPath = path;
-
         this.dirX = dirX;
         this.dirY = dirY;
-
         this.bulletAcc = acc;
-
         this.type = type;
-
         this.size = size;
-
         this.active = true;
-
+        this.s = new Sound(soundPath)
 
 
     }
@@ -74,6 +63,7 @@ class Gun{
     Shoot(posX, posY){
         if(this.bullets.length <= this.maxBullets)
         {
+            this.s.play();
             this.bullets.push(new Bullet(this.size, this.size, this.imgPath, this.dmg, this.type));
             this.bullets[this.bullets.length -1].Start(posX, posY - this.hDiff, this.bulletAcc, this.dirX, this.dirY);
 

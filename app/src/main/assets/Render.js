@@ -7,13 +7,17 @@ class Render{
         if(filePath !='')
         {
             this.img = new Image();
-            this.img.src = filePath;
+            this.img.src = 'Images/' + filePath;
         }
 
     }
 
     RenderImage(posX, posY){
         canvasContext.drawImage(this.img, posX - (this.spriteWidth / 2), posY - (this.spriteHeight / 2), this.spriteWidth, this.spriteHeight);
+    }
+
+    RenderAnimation(){
+
     }
 
 

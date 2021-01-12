@@ -1,6 +1,6 @@
 class EnemyShip{
 
-    constructor(rocketPath, bulletPath, maxHealth){
+    constructor(rocketPath, bulletPath, maxHealth, damage){
 
         this.r = new Render(75, 75, rocketPath);
 
@@ -8,11 +8,13 @@ class EnemyShip{
 
         this.h = new Health(maxHealth);
 
-        this.gun = new Gun(1.5, bulletPath, this.r.spriteHeight / 2, 10, 0, 1, 200, 'E', 8);
+        this.gun = new Gun(1.5, bulletPath, -this.r.spriteHeight / 2, damage, 0, 1, 200, 'E', 8, "PlayerShoot.wav");
 
 
         this.aliveTime = true;
         this.scoreAdded = false;
+
+        this.deathAnimation = new Animation(96, 96, 'Explosion.png', 10,0,0.1,10);
 
     }
 
@@ -29,6 +31,7 @@ class EnemyShip{
         if(this.h.currentHealth > 0)
         {
             this.m.Move();
+
         }
         else
         {
@@ -42,8 +45,8 @@ class EnemyShip{
 
         this.aliveTime += deltaTime;
 
-        this.gun.Update(this.m.position.x, this.m.position.y);
 
+        this.gun.Update(this.m.position.x, this.m.position.y);
 
     }
 
@@ -53,6 +56,10 @@ class EnemyShip{
         if(this.h.currentHealth > 0)
         {
             this.r.RenderImage(this.m.position.x, this.m.position.y);
+        }
+        else
+        {
+            this.deathAnimation.AnimateFrame(this.m.position.x, this.m.position.y);
         }
 
 
